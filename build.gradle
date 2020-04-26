@@ -1,0 +1,97 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+    id 'org.jetbrains.kotlin.jvm' version '1.3.70'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.70'
+    id "org.springframework.boot" version '2.2.2.RELEASE'
+    id "org.jetbrains.kotlin.plugin.jpa" version '1.3.70'
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'java-library'
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.jetbrains.kotlin.plugin.spring'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencyManagement {
+
+    dependencies {
+        dependency 'org.jetbrains.kotlin:kotlin-stdlib:1.3.70'
+        dependency 'org.jetbrains.kotlin:kotlin-reflect:1.3.70'
+
+        dependency 'org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE'
+
+        dependency('org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE') {
+            exclude group: 'org.junit', name: 'junit'
+            exclude group: 'org.mockito', name: 'mockito-core'
+        }
+        dependency 'org.jetbrains.kotlin:kotlin-stdlib:1.3.70'
+        dependency 'org.jetbrains.kotlin:kotlin-reflect:1.3.70'
+
+
+        dependency 'io.springfox:springfox-swagger2:2.9.2'
+        dependency 'io.springfox:springfox-swagger-ui:2.9.2'
+
+        dependency 'org.mockito:mockito-core:2.16.0'
+        dependency 'org.mockito:mockito-junit-jupiter:2.18.3'
+        dependency 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+        dependency 'org.spekframework.spek2:spek-dsl-jvm:2.0.5'
+        dependency 'org.spekframework.spek2:spek-runner-junit5:2.0.5'
+        dependency 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
+        dependency 'org.springframework.boot:spring-boot-starter-data-jpa:2.2.2.RELEASE'
+
+        dependency 'org.postgresql:postgresql:42.2.9'
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib',
+            'org.jetbrains.kotlin:kotlin-reflect'
+
+    compile 'org.springframework.boot:spring-boot-starter-webflux'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.postgresql:postgresql'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit', module: 'junit'
+        exclude group: 'org.mockito', module: 'mockito-core'
+    }
+
+
+    testCompile 'org.spekframework.spek2:spek-dsl-jvm',
+            'org.spekframework.spek2:spek-runner-junit5',
+            'com.h2database:h2',
+            'org.mockito:mockito-core',
+            'org.mockito:mockito-junit-jupiter',
+            'io.projectreactor:reactor-test'
+
+    // spek requires kotlin-reflect, can be omitted if already in the classpath
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+}
+compileJava {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+}
+compileKotlin {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+compileTestKotlin {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}

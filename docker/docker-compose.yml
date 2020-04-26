@@ -1,0 +1,6 @@
+version: '2.1'
+services:
+  postgres:
+    image: poc-webflux-test-postgres:latest
+    ports:
+      - "5432:5432"
