@@ -6,7 +6,6 @@ import au.com.nig.domain.unwrap
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.domain.Specification.where
-import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
@@ -19,6 +18,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.OneToMany
 import javax.persistence.Table
 
 class UserRepository(val entityRepository: UserEntityRepository) : IUserRepository {
@@ -60,7 +60,8 @@ class UserRepository(val entityRepository: UserEntityRepository) : IUserReposito
 
     fun buildSpecifications(
         preferredName: String?,
-        fromCreatedDate: LocalDateTime?): Specification<UserEntity> {
+        fromCreatedDate: LocalDateTime?
+    ): Specification<UserEntity> {
 
         val emptySpecification: Specification<UserEntity> = where(null)
         val preferredNameSpec = if (preferredName != null)
@@ -69,11 +70,11 @@ class UserRepository(val entityRepository: UserEntityRepository) : IUserReposito
             } else null
         val userCreateDateSpec = if (fromCreatedDate != null)
             Specification<UserEntity> { root, _, criteriaBuilder ->
-            criteriaBuilder.greaterThanOrEqualTo(
-                root.get<LocalDateTime>("userCreatedDate"),
-                fromCreatedDate
-            )
-        } else null
+                criteriaBuilder.greaterThanOrEqualTo(
+                    root.get<LocalDateTime>("userCreatedDate"),
+                    fromCreatedDate
+                )
+            } else null
         return listOf(preferredNameSpec, userCreateDateSpec)
             .filterNotNull()
             .fold(emptySpecification) { acc, spec -> acc.and(spec) }
@@ -98,7 +99,9 @@ data class UserEntity(
     @Column(name = "phone_number", nullable = true)
     val phoneNumber: String? = null,
     @Column(name = "created_date", nullable = false)
-    val userCreatedDate: LocalDateTime? = null
+    val userCreatedDate: LocalDateTime? = null,
+    @OneToMany(mappedBy = "userEntity")
+    val documents: List<DocumentEntity> = emptyList()
 ) {
     fun toUser(): User = User(
         id = this.id,
@@ -113,9 +116,4 @@ data class UserEntity(
 
 @Repository
 interface UserEntityRepository : CrudRepository<UserEntity, Long>,
-    JpaSpecificationExecutor<UserEntity> {
-    // fun findByPreferredNameAndUserCreatedDate(
-    //     preferredName: String?,
-    //     userCreatedDate: LocalDateTime?
-    // ): List<UserEntity>
-}
+    JpaSpecificationExecutor<UserEntity>

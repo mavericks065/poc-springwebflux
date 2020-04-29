@@ -31,10 +31,21 @@ class UserHandler(val interactor: IUserInteractor) {
             .body(result, UserDto::class.java)
     }
 
-
     fun findUser(request: ServerRequest): Mono<out ServerResponse> {
         val idToLookFor = request.pathVariable("id").toLong()
         val result = interactor.findUser(idToLookFor)
+        return ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(
+                result,
+                UserDto::class.java
+            )
+    }
+
+    fun findUserDocument(request: ServerRequest): Mono<out ServerResponse> {
+        val userId = request.pathVariable("id").toLong()
+        val documentId = request.pathVariable("documentId").toLong()
+        val result = interactor.findUser(userId)
         return ok()
             .contentType(MediaType.APPLICATION_JSON)
             .body(

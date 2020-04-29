@@ -24,4 +24,8 @@ class UserInteractor(val userRepository: IUserRepository) : IUserInteractor {
         return userRepository.findUser(id)
             .map { UserDto(it) }
     }
+
+    override fun findUserDocument(userId: Long, documentId: Long): Mono<ByteArray> {
+        TODO("not implemented")
+    }
 }
