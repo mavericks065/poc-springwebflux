@@ -1,7 +1,6 @@
 package au.com.nig.domain.port
 
 import au.com.nig.domain.model.User
-import au.com.nig.domain.model.UserDto
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime

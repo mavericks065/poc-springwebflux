@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.ok
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 @Component
 class UserHandler(val interactor: IUserInteractor) {
@@ -44,13 +45,13 @@ class UserHandler(val interactor: IUserInteractor) {
 
     fun findUserDocument(request: ServerRequest): Mono<out ServerResponse> {
         val userId = request.pathVariable("id").toLong()
-        val documentId = request.pathVariable("documentId").toLong()
-        val result = interactor.findUser(userId)
+        val documentId = UUID.fromString(request.pathVariable("documentId"))
+        val result = interactor.findUserDocument(userId, documentId)
         return ok()
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
             .body(
                 result,
-                UserDto::class.java
+                ByteArray::class.java
             )
     }
 }

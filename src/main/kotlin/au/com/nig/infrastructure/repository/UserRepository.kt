@@ -15,6 +15,7 @@ import reactor.core.scheduler.Scheduler
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -31,7 +32,7 @@ class UserRepository(val entityRepository: UserEntityRepository) : IUserReposito
                 this.entityRepository
                     .findById(id)
                     .unwrap("user not found")
-                    .let { it.toUser() }
+                    .toUser()
             }
             .subscribeOn(jdbcScheduler)
     }
@@ -100,7 +101,7 @@ data class UserEntity(
     val phoneNumber: String? = null,
     @Column(name = "created_date", nullable = false)
     val userCreatedDate: LocalDateTime? = null,
-    @OneToMany(mappedBy = "userEntity")
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.EAGER)
     val documents: List<DocumentEntity> = emptyList()
 ) {
     fun toUser(): User = User(
@@ -110,10 +111,13 @@ data class UserEntity(
         lastName = this.lastName,
         preferredName = this.preferredName,
         phoneNumber = this.phoneNumber,
-        userCreatedDate = this.userCreatedDate
+        userCreatedDate = this.userCreatedDate,
+        documentIds = documents.map { it.id }
     )
 }
 
 @Repository
 interface UserEntityRepository : CrudRepository<UserEntity, Long>,
-    JpaSpecificationExecutor<UserEntity>
+    JpaSpecificationExecutor<UserEntity> {
+
+}

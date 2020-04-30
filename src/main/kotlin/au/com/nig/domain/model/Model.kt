@@ -1,42 +1,30 @@
 package au.com.nig.domain.model
 
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class User(
-        val id: Long,
-        val email: String? = null,
-        val firstName: String? = null,
-        val lastName: String? = null,
-        val preferredName: String? = null,
-        val phoneNumber: String? = null,
-        val userCreatedDate: LocalDateTime? = null
-)
-
-data class Company(
-        val id: Long,
-        val email: String? = null,
-        val name: String? = null,
-        val phoneNumber: String? = null,
-        val abn: String? = null,
-        val abnType: String? = null,
-        val postcode: String? = null,
-        val country: String? = null,
-        val city: String? = null,
-        val address: String? = null
+    val id: Long,
+    val email: String? = null,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val preferredName: String? = null,
+    val phoneNumber: String? = null,
+    val userCreatedDate: LocalDateTime? = null,
+    val documentIds: List<UUID> = emptyList()
 )
 
 data class Document(
-        val userId: Long? = null,
-        val companyId: Long? = null,
-        val metadata: DocumentMetadata
+    val userId: Long? = null,
+    val companyId: Long? = null,
+    val metadata: DocumentMetadata
 )
 
 data class DocumentMetadata(
-        val uuid: UUID,
-        val originalFileName: String,
-        val category: DocumentCategory,
-        val status: DocumentStatus
+    val uuid: UUID,
+    val originalFileName: String,
+    val category: DocumentCategory,
+    val status: DocumentStatus
 )
 
 enum class DocumentCategory(val label: String) {
@@ -72,5 +60,18 @@ enum class DocumentStatus {
         }
     }
 }
+
+data class Company(
+    val id: Long,
+    val email: String? = null,
+    val name: String? = null,
+    val phoneNumber: String? = null,
+    val abn: String? = null,
+    val abnType: String? = null,
+    val postcode: String? = null,
+    val country: String? = null,
+    val city: String? = null,
+    val address: String? = null
+)
 
 

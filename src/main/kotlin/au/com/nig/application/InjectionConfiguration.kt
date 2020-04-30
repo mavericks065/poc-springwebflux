@@ -1,8 +1,10 @@
 package au.com.nig.application
 
 import au.com.nig.domain.interactors.UserInteractor
+import au.com.nig.domain.port.IDocumentRepository
 import au.com.nig.domain.port.IUserInteractor
 import au.com.nig.domain.port.IUserRepository
+import au.com.nig.infrastructure.repository.DocumentRepository
 import au.com.nig.infrastructure.repository.UserEntityRepository
 import au.com.nig.infrastructure.repository.UserRepository
 import org.springframework.context.annotation.Bean
@@ -13,12 +15,16 @@ import reactor.core.scheduler.Schedulers
 @Configuration
 class InjectionConfiguration {
     @Bean
-    fun getUserRepostory(entityRepository: UserEntityRepository): IUserRepository = UserRepository(entityRepository)
+    fun getUserRepository(entityRepository: UserEntityRepository): IUserRepository = UserRepository(entityRepository)
 
     @Bean
-    fun getUserInteractor(userRepository: IUserRepository): IUserInteractor = UserInteractor(userRepository)
+    fun getDocumentRepository(scheduler: Scheduler): IDocumentRepository = DocumentRepository(scheduler)
 
     @Bean
-    fun getAReactorScheduler(): Scheduler = Schedulers.boundedElastic()
+    fun getUserInteractor(userRepository: IUserRepository, documentRepository: IDocumentRepository): IUserInteractor =
+        UserInteractor(userRepository, documentRepository)
+
+    @Bean
+    fun getReactorScheduler(): Scheduler = Schedulers.boundedElastic()
 
 }
