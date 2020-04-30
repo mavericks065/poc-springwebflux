@@ -16,11 +16,10 @@ import javax.persistence.Table
 
 class DocumentRepository(val scheduler: Scheduler) : IDocumentRepository {
     override fun retrieveDocument(userId: Long, documentId: UUID): Mono<ByteArray> {
-        return Mono
-            .fromCallable {
-                val filePath = "/documents/$userId/documents/$documentId"
-                Files.readAllBytes(Paths.get(filePath))
-            }.subscribeOn(scheduler)
+        return Mono.fromCallable {
+            val filePath = "/Users/nicolasguignard-octo/Nicolas/priv_workspace/poc-springwebflux/documents/users/$userId/$documentId.png"
+            Files.readAllBytes(Paths.get(filePath))
+        } .subscribeOn(scheduler)
     }
 }
 
@@ -38,7 +37,7 @@ data class DocumentEntity(
             referencedColumnName = "id"
         )],
         inverseJoinColumns = [JoinColumn(
-            name = "user_id",
+            name = "user_entity_id",
             referencedColumnName = "id"
         )]
     )
